@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import AbstractUser
 
 User = get_user_model()
 
@@ -12,6 +14,5 @@ class Order(models.Model):
     class Meta:
         ordering = ('order_date',)
 
-class Customer (models.Model):
-    user = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE,)
+
 
