@@ -8,18 +8,19 @@ User = get_user_model()
 
 @login_required
 def create_order(request):
+    orders = Order.objects.filter(customer = request.user)
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
             order = form.save(commit=False)
             order.customer = request.user
             order.save()
-            return redirect("posts:index")
+            return redirect("orders:show_my_orders")
 
-        return render(request, 'new.html', {'form': form})
+        return render(request, 'my_orders.html', {'form': form, 'orders': orders})
 
     form = OrderForm()
-    return render(request, 'new.html', {'form': form})
+    return render(request, 'my_orders.html', {'form': form, 'orders': orders})
 
 @login_required
 def delete_order(request, username, order_id):
@@ -32,14 +33,13 @@ def delete_order(request, username, order_id):
 
 @login_required
 def show_my_orders(request):
-    my_orders = Order.objects.filter(customer = request.user)
+    orders = Order.objects.filter(customer = request.user)
+    form = OrderForm()
 
-    return render(request, 'index.html', {'orders':
-                                              my_orders})
+    return render(request, 'my_orders.html', {'form': form, 'orders': orders})
 
 
 def show_all_orders(request):
     all_orders = Order.objects.all()
-
-    return render(request, 'index.html', {'orders':
+    return render(request, 'my_orders.html', {'orders':
                                               all_orders})
