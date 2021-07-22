@@ -1,11 +1,12 @@
+<div id = 'a'>
 {% extends "base.html" %}
 {% block content %}
 {% load user_filters %}
-
 {% if user.is_authenticated %}
-    <form method="post" >
+    <form method="post" id = form >{{ csrf_input }}
         {% csrf_token %}
         <h5 >Добавить заказ:</h5>
+        <label
 
                  {% for field in form %}
                     <div aria-required={% if field.field.required %}"true"{% else %}"false"{% endif %}>
@@ -18,36 +19,35 @@
 
                  {% endfor %}
             <br>
-            <button type="submit" class="btn btn-primary" id="add">Добавить  </button>
+            <button type="button" class="btn btn-primary" id="add" onclick=postAdd()>Добавить  </button>
 
     </form>
+<output id = out></output>
 
 
 {% endif %}
 
  <script>
-      $(document).ready(function () {
-          // отслеживаем событие отправки формы
-          $('#add').submit(function () {
-              // создаем AJAX-вызов
-              $.ajax({
-                  data: $(this).serialize(), // получаем данные формы
-                  type: $(this).attr('method'), // GET или POST
-                  url: "{% url 'orders:create' %}",
-                  // если успешно, то
-                  success: function (response) {
-                      alert("Спасибо, что обратились к нам " + response.name);
-                  },
-                  // если ошибка, то
-                  error: function (response) {
-                      // предупредим об ошибке
-                      alert(response.responseJSON.errors);
-                      console.log(response.responseJSON.errors)
-                  }
-              });
-              return false;
-          });
-      })
+      function postAdd() {
+      var formData = new FormData(document.querySelector('form'));
+       var xhttp = new XMLHttpRequest();
+
+
+       xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+
+        document.getElementById('a').innerHTML = this.responseText;
+      }
+    };
+
+       xhttp.open('POST', 'create_order', true, );
+       document.getElementById("form").reset();
+
+       xhttp.send(formData);
+
+
+
+}
   </script>
 
 
@@ -58,11 +58,20 @@
 
 {% if orders %}
 <h5 class="card-header">Все заказы</h5>
-{% for item in orders %}
 
+
+<div class="jumbotron2">
+            <p id = 'customer'></p>
+            <p id = 'price'></p>
+            <p id = 'order_date'></p>
+
+
+        </div>
+{% for item in orders %}
 <div class="media card mb-4">
 
     <div class="media-body card-body">
+
         <div class="jumbotron">
 
                 {{ item.customer.username }}
@@ -81,3 +90,4 @@
 {% endfor %}
 {% endif %}
 {% endblock %}
+    </div>
