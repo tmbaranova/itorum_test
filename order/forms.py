@@ -5,7 +5,7 @@ User = get_user_model()
 from .models import Order
 
 class OrderForm(ModelForm):
-    customer = forms.ModelChoiceField(queryset=User.objects.exclude(orders=None))
+    customer = forms.ModelChoiceField(queryset=User.objects.filter(role='customer'))
     class Meta:
         model = Order
         fields = ['price', 'customer']

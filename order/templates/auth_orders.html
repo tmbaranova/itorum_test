@@ -3,7 +3,7 @@
 {% load user_filters %}
 
 {% if user.is_authenticated %}
-    <form method="post" action="{% url 'orders:create' %}">
+    <form method="post" >
         {% csrf_token %}
         <h5 >Добавить заказ:</h5>
 
@@ -18,12 +18,43 @@
 
                  {% endfor %}
             <br>
-            <button type="submit" class="btn btn-primary">Добавить</button>
+            <button type="submit" class="btn btn-primary" id="add">Добавить  </button>
 
     </form>
 
 
 {% endif %}
+
+ <script>
+      $(document).ready(function () {
+          // отслеживаем событие отправки формы
+          $('#add').submit(function () {
+              // создаем AJAX-вызов
+              $.ajax({
+                  data: $(this).serialize(), // получаем данные формы
+                  type: $(this).attr('method'), // GET или POST
+                  url: "{% url 'orders:create' %}",
+                  // если успешно, то
+                  success: function (response) {
+                      alert("Спасибо, что обратились к нам " + response.name);
+                  },
+                  // если ошибка, то
+                  error: function (response) {
+                      // предупредим об ошибке
+                      alert(response.responseJSON.errors);
+                      console.log(response.responseJSON.errors)
+                  }
+              });
+              return false;
+          });
+      })
+  </script>
+
+
+
+
+
+
 
 {% if orders %}
 <h5 class="card-header">Все заказы</h5>
