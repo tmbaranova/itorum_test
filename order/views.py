@@ -3,24 +3,25 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .forms import OrderForm
 from .models import Order
+from users.forms import UserCreationForm
 
 User = get_user_model()
 
 @login_required
 def create_order(request):
-    orders = Order.objects.filter(customer = request.user)
+    orders = Order.objects.all()
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
             order = form.save(commit=False)
             order.customer = request.user
             order.save()
-            return redirect("orders:show_my_orders")
+            return redirect("orders:show_auth_orders")
 
-        return render(request, 'my_orders.html', {'form': form, 'orders': orders})
+        return render(request, 'auth_orders.html', {'form': form, 'orders': orders})
 
     form = OrderForm()
-    return render(request, 'my_orders.html', {'form': form, 'orders': orders})
+    return render(request, 'auth_orders.html', {'form': form, 'orders': orders})
 
 @login_required
 def delete_order(request, username, order_id):
@@ -32,14 +33,14 @@ def delete_order(request, username, order_id):
 
 
 @login_required
-def show_my_orders(request):
-    orders = Order.objects.filter(customer = request.user)
+def show_auth_orders(request):
+    orders = Order.objects.all()
     form = OrderForm()
 
-    return render(request, 'my_orders.html', {'form': form, 'orders': orders})
+    return render(request, 'auth_orders.html', {'form': form, 'orders': orders})
 
 
 def show_all_orders(request):
     all_orders = Order.objects.all()
-    return render(request, 'my_orders.html', {'orders':
+    return render(request, 'all_orders.html', {'orders':
                                               all_orders})

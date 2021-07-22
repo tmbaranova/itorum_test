@@ -1,3 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
 {% load user_filters %}
 
 {% if user.is_authenticated %}
@@ -19,6 +21,8 @@
             <button type="submit" class="btn btn-primary">Добавить</button>
 
     </form>
+
+
 {% endif %}
 
 {% if orders %}
@@ -34,14 +38,15 @@
 
             <p>{{ item.price }}</p>
             <p>{{ item.order_date }}</p>
-            {% if user == item.customer %}
+
             <a class="button style2" href="{% url 'orders:delete' item.id %}" role="button" onclick="return confirm( 'Вы уверены?')">
                     Удалить
                     </a>
-            {% endif %}
+
 
         </div>
     </div>
 </div>
 {% endfor %}
 {% endif %}
+{% endblock %}
