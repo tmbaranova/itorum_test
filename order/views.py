@@ -38,13 +38,17 @@ def delete_order(request, order_id):
 
 def show_all_orders(request, date=None):
     now = datetime.date.today()
-    first_day_of_month = now - datetime.timedelta(days=now.day)
+    first_day_of_month = now - datetime.timedelta(days=(now.day-1))
+    print (now)
+    print (first_day_of_month)
     d = now
     lst = []
     while d >= first_day_of_month:
-        if d.weekday == 1:
+        print (d)
+        print (d.weekday())
+        if d.weekday() == 1:
             lst.append(d)
-        d + datetime.timedelta(days=1)
+        d -= datetime.timedelta(days=1)
 
     print(lst)
 

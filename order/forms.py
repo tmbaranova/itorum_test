@@ -18,12 +18,12 @@ class OrderDateForm(forms.Form):
     first_day_of_month = now - datetime.timedelta(days=now.day)
     d = now
     lst = []
-    while d >=first_day_of_month:
-        if d.weekday == 1:
-            lst.append(d)
-        d + datetime.timedelta(days=1)
+    # while d >=first_day_of_month:
+    #     if d.weekday == 1:
+    #         lst.append(d)
+    #     d + datetime.timedelta(days=1)
 
 
-    print (lst)
 
-    weeks = forms.ChoiceField(choices=None)
+
+    # weeks = forms.ChoiceField(choices=None)
