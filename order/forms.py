@@ -12,27 +12,20 @@ class OrderForm(ModelForm):
         model = Order
         fields = ['price', 'customer', 'order_date']
 
-
-class OrderDateForm(forms.Form):
+def get_weeks():
     now = datetime.date.today()
     first_day_of_month = now - datetime.timedelta(days=(now.day - 1))
+    weeks_str = []
+    while now >= first_day_of_month:
+        if now.weekday() == 0:
+            monday_str = now.strftime('%d.%m.%Y')
+            sunday_str = (now+datetime.timedelta(days=6)).strftime('%d.%m.%Y')
+            week = f'{monday_str} - {sunday_str}'
+            weeks_str.append((week, week))
 
-    d = now
-    lst = []
-    lst2=[]
-    while d >= first_day_of_month:
-        print(d)
-        print(d.weekday())
-        if d.weekday() == 0:
-            lst.append((1,d))
-            lst2.append((1,d+datetime.timedelta(days=6) ))
-        d -= datetime.timedelta(days=1)
+        now -= datetime.timedelta(days=1)
 
-    print(lst)
-    print (lst2)
+    return weeks_str
 
-
-
-
-    monday = forms.ChoiceField(choices=lst)
-    sunday = forms.ChoiceField(choices=lst2)
+class OrderDateForm(forms.Form):
+    weeks = forms.ChoiceField(choices=get_weeks())

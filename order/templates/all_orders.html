@@ -1,3 +1,5 @@
+<div id = 'a'>
+
 {% extends "base.html" %}
 {% block content %}
 {% load user_filters %}
@@ -17,12 +19,15 @@
 
                  {% endfor %}
             <br>
-            <button type="button" class="btn btn-primary" id="add" onclick=postAdd()>Добавить  </button>
+            <button type="button" class="btn btn-primary" id="add" onclick=orderChoise()>Выбрать  </button>
 
     </form>
-
+    <br>
+Сумма за неделю: {{ sum }}
+    <br>
+    Заказчики за неделю: {{ customers }}
 {% if orders %}
-<h5 class="card-header">Все заказы</h5>
+<h5 class="card-header">Заказы за неделю</h5>
 {% for item in orders %}
 
 <div class="media card mb-4">
@@ -42,4 +47,29 @@
 </div>
 {% endfor %}
 {% endif %}
+
+
+ </div>
+
+     <script>
+      function orderChoise() {
+      var formData = new FormData(document.querySelector('form'));
+       var xhttp = new XMLHttpRequest();
+
+
+       xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+        document.getElementById('form').innerHTML = '';
+        document.getElementById('a').innerHTML = this.responseText;
+        }
+         };
+
+
+       xhttp.open('POST', '', true, );
+       xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+       xhttp.send(formData);
+       document.querySelector('form').reset();
+
+}
+  </script>
 {% endblock %}

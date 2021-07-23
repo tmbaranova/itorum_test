@@ -37,32 +37,34 @@ def delete_order(request, order_id):
 
 
 def show_all_orders(request, date=None):
-    # now = datetime.date.today()
-    # first_day_of_month = now - datetime.timedelta(days=(now.day-1))
-    #
-    # d = now
-    # lst = []
-    # while d >= first_day_of_month:
-    #     print (d)
-    #     print (d.weekday())
-    #     if d.weekday() == 0:
-    #         lst.append((d,d + datetime.timedelta(days=6) ))
-    #     d -= datetime.timedelta(days=1)
-    #
-    # print(lst)
-    #
-    #
-    # if date:
-    #     monday = date - datetime.timedelta(days=date.weekday())
-    # else:
-    #     now = datetime.date.today()
-    #     monday = now - datetime.timedelta(days=now.weekday())
-    #
-    # sunday = monday + datetime.timedelta(days=6)
-    # orders_current_week = Order.objects.filter(order_date__gte=monday).filter(order_date__lte=sunday)
-    all_orders = Order.objects.all()
+    now = datetime.date.today()
+    monday = now - datetime.timedelta(days=now.weekday())
+    sunday = monday + datetime.timedelta(days=6)
+    orders_current_week = Order.objects.filter(order_date__gte=monday).filter(order_date__lte=sunday)
+    customers = []
+    sum = 0
+    for order in orders_current_week:
+        sum += order.price
+        customers.append(order.customer.username)
+    customers = set(customers)
+
+    if request.method == 'POST' or request.is_ajax():
+        form = OrderDateForm(request.POST)
+        if form.is_valid():
+            date = form.cleaned_data['weeks']
+            monday, sunday = date.split(' - ')
+            monday = datetime.datetime.strptime(monday, '%d.%m.%Y')
+            sunday = datetime.datetime.strptime(sunday, '%d.%m.%Y')
+            orders_current_week = Order.objects.filter(
+                order_date__gte=monday).filter(order_date__lte=sunday)
+
+            return render(request, 'all_orders.html',
+                          {'orders': orders_current_week, 'form': form, 'sum':sum, 'customers':customers})
+        return render(request, 'all_orders.html',
+                      {'orders': orders_current_week, 'form': form, 'sum':sum, 'customers':customers} )
+
     form = OrderDateForm()
-    return render(request, 'all_orders.html', {'orders':all_orders, 'form':form})
+    return render(request, 'all_orders.html', {'orders':orders_current_week, 'form':form, 'sum':sum, 'customers':customers})
 
 
 def hello(request):
