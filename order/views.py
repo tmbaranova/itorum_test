@@ -8,23 +8,25 @@ from users.forms import UserCreationForm
 from django.core import serializers
 from django.core.serializers import serialize
 import datetime
-
+from django.db.models import Sum, Count
 import json
+from django.db.models.functions import TruncDay, TruncDate
 
 User = get_user_model()
 
 @login_required
 def create_order(request):
-    orders = Order.objects.all()
+
     if request.method == 'POST' and request.is_ajax():
         form = OrderForm(request.POST)
         if form.is_valid():
             form.save()
-            orders = Order.objects.all()
+            orders = Order.objects.all().order_by('-order_date')
             return render(request, 'auth_orders.html', {'form': form, 'orders': orders})
-
+        orders = Order.objects.all().order_by('-order_date')
         return render(request, 'auth_orders.html', {'form': form, 'orders': orders})
 
+    orders = Order.objects.all().order_by('-order_date')
     form = OrderForm()
     return render(request, 'auth_orders.html', {'form': form, 'orders': orders})
 
@@ -32,21 +34,30 @@ def create_order(request):
 def delete_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     order.delete()
-    return redirect("orders:show_auth_orders")
+    return redirect("orders:create")
+
+def get_data_for_week(monday, sunday):
+    data_for_week = {}
+    orders_current_week = Order.objects.filter(order_date__gte=monday).filter(
+        order_date__lte=sunday).annotate(date=TruncDate('order_date')).values(
+        'date').annotate(
+        day_sum=Sum('price'),
+        customers=Count('customer', distinct=True)
+    ).order_by('-date')
+    week_sum = orders_current_week.aggregate(
+        week_sum=Sum('day_sum')
+    )
+
+    week_customers = User.objects.filter(orders__order_date__gte=monday).filter(
+        orders__order_date__lte=sunday).distinct()
+
+    data_for_week['orders_current_week'] = orders_current_week
+    data_for_week['week_sum'] = week_sum['week_sum']
+    data_for_week['week_customers'] = week_customers
+    return data_for_week
 
 
-
-def show_all_orders(request, date=None):
-    now = datetime.date.today()
-    monday = now - datetime.timedelta(days=now.weekday())
-    sunday = monday + datetime.timedelta(days=6)
-    orders_current_week = Order.objects.filter(order_date__gte=monday).filter(order_date__lte=sunday)
-    customers = []
-    sum = 0
-    for order in orders_current_week:
-        sum += order.price
-        customers.append(order.customer.username)
-    customers = set(customers)
+def show_all_orders(request):
 
     if request.method == 'POST' or request.is_ajax():
         form = OrderDateForm(request.POST)
@@ -55,16 +66,19 @@ def show_all_orders(request, date=None):
             monday, sunday = date.split(' - ')
             monday = datetime.datetime.strptime(monday, '%d.%m.%Y')
             sunday = datetime.datetime.strptime(sunday, '%d.%m.%Y')
-            orders_current_week = Order.objects.filter(
-                order_date__gte=monday).filter(order_date__lte=sunday)
-
+            data_for_week = get_data_for_week(monday, sunday)
             return render(request, 'all_orders.html',
-                          {'orders': orders_current_week, 'form': form, 'sum':sum, 'customers':customers})
-        return render(request, 'all_orders.html',
-                      {'orders': orders_current_week, 'form': form, 'sum':sum, 'customers':customers} )
+                          {'data_for_week': data_for_week, 'form': form, })
 
+        return render(request, 'all_orders.html',
+                      {'form': form})
+
+    now = datetime.date.today()
+    monday = now - datetime.timedelta(days=now.weekday())
+    sunday = monday + datetime.timedelta(days=6)
+    data_for_week = get_data_for_week(monday, sunday)
     form = OrderDateForm()
-    return render(request, 'all_orders.html', {'orders':orders_current_week, 'form':form, 'sum':sum, 'customers':customers})
+    return render(request, 'all_orders.html', {'data_for_week':data_for_week, 'form':form, })
 
 
 def hello(request):

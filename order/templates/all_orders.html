@@ -19,26 +19,31 @@
 
                  {% endfor %}
             <br>
-            <button type="button" class="btn btn-primary" id="add" onclick=orderChoise()>Выбрать  </button>
+            <button type="button" class="btn btn-primary" id="add" onclick=orderChoice()>Выбрать  </button>
 
     </form>
     <br>
-Сумма за неделю: {{ sum }}
+Сумма за неделю: {{ data_for_week.week_sum }}
     <br>
-    Заказчики за неделю: {{ customers }}
-{% if orders %}
+    Заказчики за неделю:
+    {% if data_for_week.week_customers %}
+     {% for customer in data_for_week.week_customers %}
+{{ customer.username }}
+    {% endfor %}
+    {% endif %}
+{% if data_for_week.orders_current_week %}
 <h5 class="card-header">Заказы за неделю</h5>
-{% for item in orders %}
+{% for item in data_for_week.orders_current_week %}
 
 <div class="media card mb-4">
 
     <div class="media-body card-body">
         <div class="jumbotron">
+Дата
+                {{ item.date }}
 
-                {{ item.customer.username }}
-
-            <p>{{ item.price }}</p>
-            <p>{{ item.order_date }}</p>
+            <p>Сумма за день {{ item.day_sum }}</p>
+            <p>Число заказчиков {{ item.customers }}</p>
 
 
 
@@ -52,7 +57,7 @@
  </div>
 
      <script>
-      function orderChoise() {
+      function orderChoice() {
       var formData = new FormData(document.querySelector('form'));
        var xhttp = new XMLHttpRequest();
 

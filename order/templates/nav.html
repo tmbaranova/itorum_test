@@ -4,50 +4,23 @@
         <div class="container">
 
 
+            <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+            <ul class="nav navbar-nav menu_nav ml-auto mr-auto">
+
       {% if user.is_authenticated %}
-       <li>Пользователь: {{ user.username }}</li>
-       <li><a href="{% url 'users:logout' %}" class="scrolly">Выйти</a></li>
+                <li class="nav-item"><small> Пользователь: {{ user.username }}</small></li>
+       <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}" >Выйти</a></li>
         {% else %}
-        <li><a href="{% url 'users:login' %}" class="scrolly ">Войти</a></li>
-        <li><a href="{% url 'users:signup' %}" class="scrolly">Зарегистрироваться</a></li>
+
+        <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}" >Войти</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'users:signup' %}" >Зарегистрироваться</a></li>
         {% endif %}
-
-              <output id = 'out' >  </output>
-
-     <button type="button" onclick="getVersion()">Run HELLO</button>
-
-            <script >
-    function getVersion() {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById('out').innerHTML = this.responseText;
-      }
-    };
-    xhttp.open('GET', 'hello', true);
-    xhttp.send();
-}
-</script>
-    {% block content %}
-
-
-    {% endblock content %}
-    <script >
-    function getVersion() {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById('out').innerHTML = this.responseText;
-      }
-    };
-    xhttp.open('GET', 'hello', true);
-    xhttp.send();
-}
-</script>
-
+                </ul>
 
           </div>
-        </div>
+</div>
       </nav>
     </div>
   </header>
+
+
