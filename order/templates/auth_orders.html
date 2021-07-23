@@ -9,7 +9,7 @@
         <label
 
                  {% for field in form %}
-                    <div aria-required={% if field.field.required %}"true"{% else %}"false"{% endif %}>
+                    <div aria-required={% if field.field.required %}'true'{% else %}"false"{% endif %}>
                           <label for="{{ field.id_for_label }}" class="col-md-4 col-form-label text-md-right">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}</label>
 
                                     {{ field|addclass:"form-control" }}
@@ -26,34 +26,6 @@
 
 
 {% endif %}
-
- <script>
-      function postAdd() {
-      var formData = new FormData(document.querySelector('form'));
-       var xhttp = new XMLHttpRequest();
-
-
-       xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-
-        document.getElementById('a').innerHTML = this.responseText;
-      }
-    };
-
-       xhttp.open('POST', 'create_order', true, );
-       document.getElementById("form").reset();
-
-       xhttp.send(formData);
-
-
-
-}
-  </script>
-
-
-
-
-
 
 
 {% if orders %}
@@ -89,5 +61,36 @@
 </div>
 {% endfor %}
 {% endif %}
-{% endblock %}
     </div>
+
+     <script>
+      function postAdd() {
+      var formData = new FormData(document.querySelector('form'));
+       var xhttp = new XMLHttpRequest();
+
+
+       xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+        document.getElementById('form').innerHTML = '';
+        document.getElementById('a').innerHTML = this.responseText;
+        }
+         };
+
+
+       xhttp.open('POST', 'create_order', true, );
+       xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+       xhttp.send(formData);
+       document.querySelector('form').reset();
+
+}
+  </script>
+{% endblock %}
+
+
+
+
+
+
+
+
+

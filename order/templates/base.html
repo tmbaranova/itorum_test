@@ -13,32 +13,14 @@
 
 <body>
     {% include 'nav.html' %}
-    <output id = 'out' >  </output>
 
-     <button type="button" onclick="getVersion()">Run HELLO</button>
     {% block content %}
 
 
     {% endblock content %}
-    <script >
-    function getVersion() {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById('out').innerHTML = this.responseText;
-      }
-    };
-    xhttp.open('GET', 'hello', true);
-    xhttp.send();
-}
-</script>
 
 
 
-    {% block javascript %}
-
-
-    {% endblock javascript %}
 </body>
 
 </html>

@@ -7,6 +7,7 @@ from django.http import HttpResponse, JsonResponse
 from users.forms import UserCreationForm
 from django.core import serializers
 from django.core.serializers import serialize
+import datetime
 
 import json
 
@@ -15,7 +16,7 @@ User = get_user_model()
 @login_required
 def create_order(request):
     orders = Order.objects.all()
-    if request.method == 'POST':
+    if request.method == 'POST' and request.is_ajax():
         form = OrderForm(request.POST)
         if form.is_valid():
             form.save()
@@ -34,19 +35,31 @@ def delete_order(request, order_id):
     return redirect("orders:show_auth_orders")
 
 
-@login_required
-def show_auth_orders(request):
-    orders = Order.objects.all()
-    form = OrderForm()
 
-    return render(request, 'auth_orders.html', {'form': form, 'orders': orders})
+def show_all_orders(request, date=None):
+    now = datetime.date.today()
+    first_day_of_month = now - datetime.timedelta(days=now.day)
+    d = now
+    lst = []
+    while d >= first_day_of_month:
+        if d.weekday == 1:
+            lst.append(d)
+        d + datetime.timedelta(days=1)
+
+    print(lst)
 
 
+    if date:
+        monday = date - datetime.timedelta(days=date.weekday())
+    else:
+        now = datetime.date.today()
+        monday = now - datetime.timedelta(days=now.weekday())
 
-def show_all_orders(request):
+    sunday = monday + datetime.timedelta(days=6)
+    orders_current_week = Order.objects.filter(order_date__gte=monday).filter(order_date__lte=sunday)
     all_orders = Order.objects.all()
     return render(request, 'all_orders.html', {'orders':
-                                              all_orders})
+                                              orders_current_week})
 
 
 def hello(request):
