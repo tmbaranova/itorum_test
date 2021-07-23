@@ -15,15 +15,24 @@ class OrderForm(ModelForm):
 
 class OrderDateForm(forms.Form):
     now = datetime.date.today()
-    first_day_of_month = now - datetime.timedelta(days=now.day)
+    first_day_of_month = now - datetime.timedelta(days=(now.day - 1))
+
     d = now
     lst = []
-    # while d >=first_day_of_month:
-    #     if d.weekday == 1:
-    #         lst.append(d)
-    #     d + datetime.timedelta(days=1)
+    lst2=[]
+    while d >= first_day_of_month:
+        print(d)
+        print(d.weekday())
+        if d.weekday() == 0:
+            lst.append((1,d))
+            lst2.append((1,d+datetime.timedelta(days=6) ))
+        d -= datetime.timedelta(days=1)
+
+    print(lst)
+    print (lst2)
 
 
 
 
-    # weeks = forms.ChoiceField(choices=None)
+    monday = forms.ChoiceField(choices=lst)
+    sunday = forms.ChoiceField(choices=lst2)
