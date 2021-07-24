@@ -14,20 +14,20 @@ from django.db.models.functions import TruncDay, TruncDate
 
 User = get_user_model()
 
+
+
+
 @login_required
 def create_order(request):
-
+    orders = Order.objects.all().order_by('-order_date')
     if request.is_ajax():
         form = OrderForm(request.POST)
         if form.is_valid():
-            print (form.cleaned_data)
             form.save()
             orders = Order.objects.all().order_by('-order_date')
-            return render(request, 'auth_orders.html', {'form': form, 'orders': orders})
-        orders = Order.objects.all().order_by('-order_date')
-        return render(request, 'auth_orders.html', {'form': form, 'orders': orders})
+            return render(request, 'ajax_create_order.html', {'orders': orders})
+        return render(request, 'ajax_create_order.html', {'orders': orders})
 
-    orders = Order.objects.all().order_by('-order_date')
     form = OrderForm()
     return render(request, 'auth_orders.html', {'form': form, 'orders': orders})
 
@@ -38,7 +38,9 @@ def delete_order(request, order_id):
     return redirect("orders:create")
 
 def get_data_for_week(monday, sunday):
-    data_for_week = {}
+    data_for_week = {'orders_current_week': None,
+                     'week_sum': None,
+                     'week_customers': None}
     orders_current_week2 = Order.objects.filter(order_date__gte=monday).filter(
         order_date__lte=sunday)
     print (orders_current_week2)
@@ -59,6 +61,8 @@ def get_data_for_week(monday, sunday):
     week_customers = User.objects.filter(orders__order_date__gte=monday).filter(
         orders__order_date__lte=sunday).distinct()
 
+    print (week_customers)
+
 
 
     data_for_week['week_customers'] = week_customers
@@ -75,11 +79,8 @@ def show_all_orders(request):
             monday = datetime.datetime.strptime(monday, '%d.%m.%Y')
             sunday = datetime.datetime.strptime(sunday, '%d.%m.%Y')
             data_for_week = get_data_for_week(monday, sunday)
-            return render(request, 'all_orders.html',
-                          {'data_for_week': data_for_week, 'form': form})
-
-        return render(request, 'all_orders.html',
-                      {'form': form})
+            return render(request, 'ajax_week.html',
+                          {'data_for_week': data_for_week})
 
     now = datetime.date.today()
     monday = now - datetime.timedelta(days=now.weekday())

@@ -6,9 +6,13 @@
 
             <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
             <ul class="nav navbar-nav menu_nav ml-auto mr-auto">
+                <li class="nav-item"><a class="nav-link"  href="{% url 'orders:create' %}">Все заказы</a></li>
+                <li class="nav-item"><a class="nav-link"  href="{% url 'orders:show_all_orders' %}">За неделю</a></li>
+                <li class="nav-item"><a class="nav-link"  href="{% url 'api:order_list' %}">API</a></li>
+
 
       {% if user.is_authenticated %}
-                <li class="nav-item"><small> Пользователь: {{ user.username }}</small></li>
+
        <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}" >Выйти</a></li>
         {% else %}
 

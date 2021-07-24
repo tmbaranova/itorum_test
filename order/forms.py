@@ -7,8 +7,8 @@ import datetime
 
 
 class OrderForm(ModelForm):
-    customer = forms.ModelChoiceField(queryset=User.objects.filter(role='customer'))
-    order_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    customer = forms.ModelChoiceField(queryset=User.objects.filter(role='customer'), label='Заказчик')
+    order_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), label= 'Дата')
     class Meta:
         model = Order
         fields = ['price', 'customer', 'order_date']
@@ -30,4 +30,4 @@ def get_weeks():
     return weeks_str
 
 class OrderDateForm(forms.Form):
-    weeks = forms.ChoiceField(choices=get_weeks())
+    weeks = forms.ChoiceField(choices=get_weeks(), label = 'Неделя')

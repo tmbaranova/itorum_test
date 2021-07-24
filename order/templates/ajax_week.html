@@ -1,30 +1,4 @@
-
-
-{% extends "base.html" %}
-{% block content %}
-{% load user_filters %}
-<form method="post" id = form >{{ csrf_input }}
-        {% csrf_token %}
-        <h5 >Выбрать неделю:</h5>
-
-
-                 {% for field in form %}
-                    <div style ="text-align: left" {% if field.field.required %}'true'{% else %}"false"{% endif %}>
-                          <label for="{{ field.id_for_label }}" class="col-md-4 col-form-label text-md-right">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}</label>
-
-                                    {{ field|addclass:"form-control" }}
-                                    {% if field.help_text %}
-                                    <small id="{{ field.id_for_label }}-help" class="form-text text-muted">{{ field.help_text|safe }}</small>
-                                   {% endif %}
-
-                 {% endfor %}
-            <br>
-            <button type="button" class="btn btn-primary" id="add" onclick=orderChoice()>Выбрать  </button>
-
-    </form>
-
-    <div id="ajax_week">
-    <br>
+<br>
     <br>
 
 
@@ -50,8 +24,8 @@
     {% endfor %}
 
     {% endif %}
-    <br>
-        {% if data_for_week.orders_current_week %}
+<br>
+{% if data_for_week.orders_current_week %}
 
     <h5 class="card-header">Заказы за неделю</h5>
 
@@ -99,30 +73,3 @@
                   </table>
 
               </div>
-</div>
-
-
-
-
-
-     <script>
-      function orderChoice() {
-      var formData = new FormData(document.querySelector('form'));
-       var xhttp = new XMLHttpRequest();
-
-
-       xhttp.onreadystatechange = function() {
-        if (xhttp.readyState == 4 && this.status == 200) {
-
-        document.getElementById('ajax_week').innerHTML = this.responseText;
-        }
-         };
-       xhttp.open('POST', '', true, );
-       xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-       xhttp.send(formData);
-
-
-}
-  </script>
-{% endblock %}
-
