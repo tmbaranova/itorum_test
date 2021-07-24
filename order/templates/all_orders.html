@@ -23,6 +23,7 @@
 
     </form>
     <br>
+
 Сумма за неделю: {{ data_for_week.week_sum }}
     <br>
     Заказчики за неделю:
@@ -54,7 +55,7 @@
 {% endif %}
 
 
- </div>
+
 
      <script>
       function orderChoice() {
@@ -73,8 +74,10 @@
        xhttp.open('POST', '', true, );
        xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
        xhttp.send(formData);
-       document.querySelector('form').reset();
+
 
 }
   </script>
 {% endblock %}
+
+     </div>

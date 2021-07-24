@@ -4,14 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     {% load static %}
-    <link rel="stylesheet" href="{% static '/style.css' %}">
+    <link rel="stylesheet" href="{% static '/vendors/bootstrap/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static '/vendors/fontawesome/css/all.min.css' %}">
+	<link rel="stylesheet" href="{% static '/vendors/themify-icons/themify-icons.css' %}">
+	<link rel="stylesheet" href="{% static '/vendors/linericon/style.css' %}">
+  <link rel="stylesheet" href="{% static '/vendors/owl-carousel/owl.theme.default.min.css' %}">
+  <link rel="stylesheet" href="{% static '/vendors/owl-carousel/owl.carousel.min.css' %}">
+  <link rel="stylesheet" href="{% static '/vendors/nice-select/nice-select.css' %}">
+  <link rel="stylesheet" href="{% static '/vendors/nouislider/nouislider.min.css' %}">
+
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
 
 
 </head>
 <body>
     {% include 'nav.html' %}
+    <section class="cart_area">
+      <div class="container">
+          <div class="cart_inner">
+              <div class="table-responsive">
+
     {% block content %}
     {% endblock content %}
+                     </div>
+          </div>
+      </div>
+  </section>
+
 </body>
 </html>
 

@@ -5,12 +5,14 @@ User = get_user_model()
 from .models import Order
 import datetime
 
+
 class OrderForm(ModelForm):
     customer = forms.ModelChoiceField(queryset=User.objects.filter(role='customer'))
-    order_date = forms.DateField()
+    order_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     class Meta:
         model = Order
         fields = ['price', 'customer', 'order_date']
+
 
 def get_weeks():
     now = datetime.date.today()
