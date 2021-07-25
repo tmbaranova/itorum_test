@@ -2,27 +2,20 @@
     <div class="main_menu">
       <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
-
-
             <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
             <ul class="nav navbar-nav menu_nav ml-auto mr-auto">
                 <li class="nav-item"><a class="nav-link"  href="{% url 'orders:create' %}">Все заказы</a></li>
                 <li class="nav-item"><a class="nav-link"  href="{% url 'orders:show_all_orders' %}">За неделю</a></li>
                 <li class="nav-item"><a class="nav-link"  href="{% url 'api:order_list' %}">API</a></li>
-
-
       {% if user.is_authenticated %}
-
        <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}" >Выйти</a></li>
-        {% else %}
-
+      {% else %}
         <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}" >Войти</a></li>
         <li class="nav-item"><a class="nav-link" href="{% url 'users:signup' %}" >Зарегистрироваться</a></li>
-        {% endif %}
-                </ul>
-
-          </div>
-</div>
+      {% endif %}
+            </ul>
+            </div>
+        </div>
       </nav>
     </div>
   </header>

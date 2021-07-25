@@ -1,14 +1,19 @@
-from django.forms import ModelForm
-from django.contrib.auth import get_user_model
 from django import forms
+from django.contrib.auth import get_user_model
+from django.forms import ModelForm
+
 User = get_user_model()
-from .models import Order
 import datetime
+
+from .models import Order
 
 
 class OrderForm(ModelForm):
-    customer = forms.ModelChoiceField(queryset=User.objects.filter(role='customer'), label='Заказчик')
-    order_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), label= 'Дата')
+    customer = forms.ModelChoiceField(queryset=User.objects.filter(
+        role='customer'), label='Заказчик')
+    order_date = forms.DateField(widget=forms.DateInput(
+        attrs={'type': 'date'}), label='Дата')
+
     class Meta:
         model = Order
         fields = ['price', 'customer', 'order_date']
@@ -26,8 +31,8 @@ def get_weeks():
             weeks_str.append((week, week))
 
         now -= datetime.timedelta(days=1)
-
     return weeks_str
 
+
 class OrderDateForm(forms.Form):
-    weeks = forms.ChoiceField(choices=get_weeks(), label = 'Неделя')
+    weeks = forms.ChoiceField(choices=get_weeks(), label='Неделя')

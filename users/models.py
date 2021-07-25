@@ -27,10 +27,10 @@ class CustomUser(AbstractUser):
         (USER, 'user'),
     )
     role = models.CharField(max_length=100, choices=USER_TYPE_CHOICES,
-                            default='user')
+                            default='user', verbose_name='Роль')
     email = models.EmailField(unique=True)
-    username = models.CharField(unique=True, max_length=100,)
-
+    username = models.CharField(unique=True, max_length=100,
+                                verbose_name='Имя пользователя')
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
@@ -46,5 +46,3 @@ class CustomUser(AbstractUser):
     @property
     def is_customer(self):
         return self.role == 'customer'
-
-

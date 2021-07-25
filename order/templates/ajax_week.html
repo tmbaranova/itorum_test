@@ -1,77 +1,53 @@
 <br>
-    <br>
-
-
-
-
-
-
-    {% if data_for_week.week_sum %}
-     Сумма заказов за неделю: {{ data_for_week.week_sum }}
-    {% else %}
-    На этой неделе заказов не было.
-    {% endif %}
-    <br>
-
-    {% if data_for_week.week_customers %}
-    На этой неделе заказывали:
-     {% for customer in data_for_week.week_customers %}
-    {% if forloop.last %}
-    {{ customer.username }}
-    {% else %}
-    {{ customer.username }},
-    {% endif %}
-    {% endfor %}
-
-    {% endif %}
 <br>
+{% if data_for_week.week_sum %}
+    Сумма заказов за неделю: {{ data_for_week.week_sum }}
+    <br>
+
+    На этой неделе заказывали:
+    {% for customer in data_for_week.week_customers %}
+        {% if forloop.last %}
+            {{ customer.username }}
+        {% else %}
+            {{ customer.username }},
+        {% endif %}
+    {% endfor %}
+{% else %}
+    На этой неделе заказов не было.
+{% endif %}
+<br>
+
 {% if data_for_week.orders_current_week %}
+<h5 class="card-header">Заказы за неделю</h5>
+<div class="table-responsive">
+    <table class="table" >
+        <thead>
+        <tr>
+            <th scope="col">Дата</th>
+            <th scope="col">Сумма заказов за день</th>
+            <th scope="col">Заказчики</th>
+        </tr>
+        </thead>
 
-    <h5 class="card-header">Заказы за неделю</h5>
-
-
-              <div class="table-responsive">
-                  <table class="table" >
-                      <thead>
-                          <tr>
-                              <th scope="col">Дата</th>
-                              <th scope="col">Сумма заказов за день</th>
-                              <th scope="col">Заказчики</th>
-
-                          </tr>
-                      </thead>
-
-                      <tbody >
-
-                      {% for item in data_for_week.orders_current_week %}
-
-                          <tr>
-                              <td>
-                                  <div class="media">
-
-                                      <div class="media-body">
-                                          <p>{{ item.order_date }}</p>
-                                      </div>
-                                  </div>
-                              </td>
-                              <td>
-                                  <h5>{{ item.day_sum }}</h5>
-                              </td>
-                              <td>
-                                  <h5>{{ item.unique_customers }}</h5>
-
-
-                              </td>
-
-
-                              </tr>
-                              {% endfor %}
-                      {% endif %}
-
-
-
-                      </tbody>
-
-                  </table>
-
-              </div>
+        <tbody >
+        {% for item in data_for_week.orders_current_week %}
+        <tr>
+            <td>
+                <div class="media">
+                    <div class="media-body">
+                        <p>{{ item.order_date }}</p>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <h5>{{ item.day_sum }}</h5>
+            </td>
+            <td>
+                <h5>{{ item.unique_customers }}</h5>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}

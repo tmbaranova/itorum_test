@@ -1,128 +1,96 @@
-
-
 {% extends "base.html" %}
 {% block content %}
 {% load user_filters %}
 <form method="post" id = form >{{ csrf_input }}
-        {% csrf_token %}
-        <h5 >Выбрать неделю:</h5>
+    {% csrf_token %}
+    <h5 >Выбрать неделю:</h5>
+    {% for field in form %}
+        <div style ="text-align: left" {% if field.field.required %}'true'{% else %}"false"{% endif %}>
+        <label for="{{ field.id_for_label }}" class="col-md-4 col-form-label text-md-right">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}</label>
 
+        {{ field|addclass:"form-control" }}
+            {% if field.help_text %}
+                <small id="{{ field.id_for_label }}-help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+            {% endif %}
+    {% endfor %}
+    <br>
+    <button type="button" class="btn btn-primary" id="add" onclick=orderChoice()>Выбрать  </button>
+</form>
 
-                 {% for field in form %}
-                    <div style ="text-align: left" {% if field.field.required %}'true'{% else %}"false"{% endif %}>
-                          <label for="{{ field.id_for_label }}" class="col-md-4 col-form-label text-md-right">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}</label>
-
-                                    {{ field|addclass:"form-control" }}
-                                    {% if field.help_text %}
-                                    <small id="{{ field.id_for_label }}-help" class="form-text text-muted">{{ field.help_text|safe }}</small>
-                                   {% endif %}
-
-                 {% endfor %}
-            <br>
-            <button type="button" class="btn btn-primary" id="add" onclick=orderChoice()>Выбрать  </button>
-
-    </form>
-
-    <div id="ajax_week">
+<div id="ajax_week">
     <br>
     <br>
-
-
-
-
-
-
     {% if data_for_week.week_sum %}
-     Сумма заказов за неделю: {{ data_for_week.week_sum }}
+        Сумма заказов за неделю: {{ data_for_week.week_sum }}
     {% else %}
-    На этой неделе заказов не было.
+        На этой неделе заказов не было.
     {% endif %}
     <br>
 
     {% if data_for_week.week_customers %}
-    На этой неделе заказывали:
-     {% for customer in data_for_week.week_customers %}
-    {% if forloop.last %}
-    {{ customer.username }}
-    {% else %}
-    {{ customer.username }},
-    {% endif %}
-    {% endfor %}
-
+        На этой неделе заказывали:
+        {% for customer in data_for_week.week_customers %}
+            {% if forloop.last %}
+                {{ customer.username }}
+            {% else %}
+                {{ customer.username }},
+            {% endif %}
+        {% endfor %}
     {% endif %}
     <br>
-        {% if data_for_week.orders_current_week %}
-
+    {% if data_for_week.orders_current_week %}
     <h5 class="card-header">Заказы за неделю</h5>
+    <div class="table-responsive">
+        <table class="table" >
+            <thead>
+            <tr>
+                <th scope="col">Дата</th>
+                <th scope="col">Сумма заказов за день</th>
+                <th scope="col">Заказчики</th>
+            </tr>
+            </thead>
 
-
-              <div class="table-responsive">
-                  <table class="table" >
-                      <thead>
-                          <tr>
-                              <th scope="col">Дата</th>
-                              <th scope="col">Сумма заказов за день</th>
-                              <th scope="col">Заказчики</th>
-
-                          </tr>
-                      </thead>
-
-                      <tbody >
-
-                      {% for item in data_for_week.orders_current_week %}
-
-                          <tr>
-                              <td>
-                                  <div class="media">
-
-                                      <div class="media-body">
-                                          <p>{{ item.order_date }}</p>
-                                      </div>
-                                  </div>
-                              </td>
-                              <td>
-                                  <h5>{{ item.day_sum }}</h5>
-                              </td>
-                              <td>
-                                  <h5>{{ item.unique_customers }}</h5>
-                              </td>
-
-
-                              </tr>
-                              {% endfor %}
-                      {% endif %}
-
-
-
-                      </tbody>
-
-                  </table>
-
-              </div>
+            <tbody >
+            {% for item in data_for_week.orders_current_week %}
+            <tr>
+                <td>
+                    <div class="media">
+                        <div class="media-body">
+                            <p>{{ item.order_date }}</p>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <h5>{{ item.day_sum }}</h5>
+                </td>
+                <td>
+                    <h5>{{ item.unique_customers }}</h5>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
 </div>
 
 
 
-
-
-     <script>
+<script>
       function orderChoice() {
       var formData = new FormData(document.querySelector('form'));
-       var xhttp = new XMLHttpRequest();
+      var xhttp = new XMLHttpRequest();
 
-
-       xhttp.onreadystatechange = function() {
+      xhttp.onreadystatechange = function() {
         if (xhttp.readyState == 4 && this.status == 200) {
-
         document.getElementById('ajax_week').innerHTML = this.responseText;
         }
          };
-       xhttp.open('POST', '', true, );
-       xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-       xhttp.send(formData);
-
-
+      xhttp.open('POST', '', true, );
+      xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+      xhttp.send(formData);
 }
-  </script>
+ </script>
+
 {% endblock %}
 

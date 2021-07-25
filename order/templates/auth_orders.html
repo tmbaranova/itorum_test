@@ -1,109 +1,82 @@
-
-
 {% extends "base.html" %}
-
 {% block content %}
-
 {% load user_filters %}
 {% if user.is_authenticated %}
     <form method="post" id = form >{{ csrf_input }}
         {% csrf_token %}
         <h5 >Добавить заказ:</h5>
+        {% for field in form %}
+            <div style ="text-align: left"
+                {% if field.field.required %}'true'{% else %}"false"{% endif %}>
+            <label for="{{ field.id_for_label }}" class="col-md-4 col-form-label text-md-right">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}</label>
 
-
-                 {% for field in form %}
-                    <div style ="text-align: left"
-                         {% if field.field.required %}'true'{% else %}"false"{% endif %}>
-                          <label for="{{ field.id_for_label }}" class="col-md-4 col-form-label text-md-right">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}</label>
-
-                                    {{ field|addclass:"form-control" }}
-                                    {% if field.help_text %}
-                                    <small id="{{ field.id_for_label }}-help" class="form-text text-muted">{{ field.help_text|safe }}</small>
-                                   {% endif %}
-
-                 {% endfor %}
-            <br>
+            {{ field|addclass:"form-control" }}
+            {% if field.help_text %}
+                <small id="{{ field.id_for_label }}-help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+            {% endif %}
+        {% endfor %}
+        <br>
         <button type="button" class="btn btn-primary" id="add" onclick=postAdd()>Добавить  </button>
-
-
     </form>
 <br>
-
-
-
 {% endif %}
 <br>
+<h5 class="card-header">Все заказы</h5>
+<div class="table-responsive">
+    <table class="table" id = 'ajax'>
+        <thead>
+        <tr>
+            <th scope="col">Дата</th>
+            <th scope="col">Сумма заказа</th>
+            <th scope="col">Заказчик</th>
+        </tr>
+        </thead>
+        <tbody >
+        {% if orders %}
+            {% for item in orders %}
+                <tr>
+                    <td>
+                        <div class="media">
+                            <div class="media-body">
+                                <p>{{ item.order_date }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <h5>{{ item.price }}</h5>
+                    </td>
+                    <td>
+                        <h5>{{ item.customer.username }}</h5>
+                    </td>
+                    <td>
+                        <a class="gray_btn" href="{% url 'orders:delete' item.id %}" role="button" onclick="return confirm( 'Вы уверены?')">
+                        Удалить
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+</div>
 
 
-
-        <h5 class="card-header">Все заказы</h5>
-
-              <div class="table-responsive">
-                  <table class="table" id = 'ajax'>
-                      <thead>
-                          <tr>
-                              <th scope="col">Дата</th>
-                              <th scope="col">Сумма заказа</th>
-                              <th scope="col">Заказчик</th>
-
-                          </tr>
-                      </thead>
-
-                      <tbody >
-                      {% if orders %}
-                      {% for item in orders %}
-
-                          <tr>
-                              <td>
-                                  <div class="media">
-
-                                      <div class="media-body">
-                                          <p>{{ item.order_date }}</p>
-                                      </div>
-                                  </div>
-                              </td>
-                              <td>
-                                  <h5>{{ item.price }}</h5>
-                              </td>
-                              <td>
-                                  <h5>{{ item.customer.username }}</h5>
-                              </td>
-                              <td>
-                                  <a class="gray_btn" href="{% url 'orders:delete' item.id %}" role="button" onclick="return confirm( 'Вы уверены?')">
-                    Удалить
-                    </a>
-                              </td>
-
-                              </tr>
-                              {% endfor %}
-                      {% endif %}
-
-                      </tbody>
-                  </table>
-              </div>
-
-
-     <script>
+<script>
       function postAdd() {
       var formData = new FormData(document.querySelector('form'));
-       var xhttp = new XMLHttpRequest();
+      var xhttp = new XMLHttpRequest();
 
-
-       xhttp.onreadystatechange = function() {
+      xhttp.onreadystatechange = function() {
         if (xhttp.readyState == 4 && this.status == 200) {
-
         document.getElementById('ajax').innerHTML = this.responseText;
         }
          };
-
-
        xhttp.open('POST', 'create_order', true, );
        xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
        xhttp.send(formData);
-
-
 }
   </script>
+
 {% endblock %}
 
 
