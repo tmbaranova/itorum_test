@@ -9,8 +9,10 @@ from django.core import serializers
 from django.core.serializers import serialize
 import datetime
 from django.db.models import Sum, Count
+from django.db.models import F
 import json
 from django.db.models.functions import TruncDay, TruncDate
+from django.db.models import OuterRef, Subquery
 
 User = get_user_model()
 
@@ -40,31 +42,32 @@ def delete_order(request, order_id):
 def get_data_for_week(monday, sunday):
     data_for_week = {'orders_current_week': None,
                      'week_sum': None,
-                     'week_customers': None}
-    orders_current_week2 = Order.objects.filter(order_date__gte=monday).filter(
-        order_date__lte=sunday)
-    print (orders_current_week2)
+                     'week_customers': None,
+                     }
+
     orders_current_week = Order.objects.filter(order_date__gte=monday).filter(
         order_date__lte=sunday).values('order_date').annotate(
         day_sum=Sum('price'),
-        customers=Count('customer', distinct=True)
+        customers=Count('customer', distinct=True),
     ).order_by('-order_date')
-    print (orders_current_week)
+
+    for date in orders_current_week:
+       unique_customers = User.objects.filter(orders__order_date=date["order_date"]).distinct().values('username')
+
+       unique_customers = [x['username'] for x in unique_customers]
+       cust_str = ', '.join(unique_customers)
+       date['unique_customers'] = cust_str
+
+
+
     data_for_week['orders_current_week'] = orders_current_week
 
-
     week_sum = orders_current_week.aggregate(
-        week_sum=Sum('day_sum')
-    )
+        week_sum=Sum('day_sum'))
     data_for_week['week_sum'] = week_sum['week_sum']
 
     week_customers = User.objects.filter(orders__order_date__gte=monday).filter(
         orders__order_date__lte=sunday).distinct()
-
-    print (week_customers)
-
-
-
     data_for_week['week_customers'] = week_customers
     return data_for_week
 

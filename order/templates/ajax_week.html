@@ -36,7 +36,7 @@
                           <tr>
                               <th scope="col">Дата</th>
                               <th scope="col">Сумма заказов за день</th>
-                              <th scope="col">Число уникальных заказчиков</th>
+                              <th scope="col">Заказчики</th>
 
                           </tr>
                       </thead>
@@ -58,7 +58,9 @@
                                   <h5>{{ item.day_sum }}</h5>
                               </td>
                               <td>
-                                  <h5>{{ item.customers }}</h5>
+                                  <h5>{{ item.unique_customers }}</h5>
+
+
                               </td>
 
 
