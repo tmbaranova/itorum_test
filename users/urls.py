@@ -9,5 +9,3 @@ urlpatterns = [
     path("api/", include('api.urls')),
     path('', include('django.contrib.auth.urls'))
 ]
-
-

@@ -1,11 +1,10 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.forms import ModelForm
+import datetime
+from .models import Order
 
 User = get_user_model()
-import datetime
-
-from .models import Order
 
 
 class OrderForm(ModelForm):
