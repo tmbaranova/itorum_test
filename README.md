@@ -23,9 +23,7 @@
 <br>
 
 ### Запуск (docker):
-1. Запустить docker-compose командой:
-<br>
-   docker-compose up -d
+1. Запустить docker-compose командой: docker-compose up -d
    
 ### Стек технологий:
 Python(Django), SQLite3, JavaScript, HTML, CSS, Docker.
